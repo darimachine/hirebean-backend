@@ -1,0 +1,38 @@
+package bg.uni.sofia.fmi.spring.hirebean.model.entity;
+
+import bg.uni.sofia.fmi.spring.hirebean.model.enums.ApplicationStatus;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class JobApplication extends BaseEntity {
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "candidate_id", nullable = false)
+  private User candidate;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "job_offer_id", nullable = false)
+  private JobOffer jobOffer;
+
+  @Column(columnDefinition = "TEXT")
+  private String coverLetter;
+
+  @Enumerated(EnumType.STRING)
+  private ApplicationStatus status;
+}

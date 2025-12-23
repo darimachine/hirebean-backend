@@ -1,0 +1,34 @@
+package bg.uni.sofia.fmi.spring.hirebean.model.entity;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Entity
+@Table(name = "candidate_profiles")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class CandidateProfile extends BaseEntity {
+  @OneToOne
+  @JoinColumn(name = "user_id", nullable = false)
+  private User user;
+
+  private String resumeUrl; // link to file
+
+  @Column(columnDefinition = "TEXT")
+  private String bio;
+
+  private String linkedinUrl;
+  private String githubUrl;
+  private String jobTitle;
+}
