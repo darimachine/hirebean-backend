@@ -1,11 +1,14 @@
 package bg.uni.sofia.fmi.spring.hirebean.model.entity;
 
+import bg.uni.sofia.fmi.spring.hirebean.model.enums.ApplicationStatus;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,21 +16,24 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(
-    name = "bookmarks",
-    uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "job_offer_id"})})
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Bookmark extends BaseEntity {
+public class JobApplication extends BaseEntity {
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_id", nullable = false)
-  private User user;
+  @JoinColumn(name = "candidate_id", nullable = false)
+  private User candidate;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToMany(fetch = FetchType.LAZY)
   @JoinColumn(name = "job_offer_id", nullable = false)
   private JobOffer jobOffer;
+
+  @Column(columnDefinition = "TEXT")
+  private String coverLetter;
+
+  @Enumerated(EnumType.STRING)
+  private ApplicationStatus status;
 }

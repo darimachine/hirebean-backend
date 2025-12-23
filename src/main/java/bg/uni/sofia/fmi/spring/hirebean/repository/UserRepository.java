@@ -1,14 +1,13 @@
 package bg.uni.sofia.fmi.spring.hirebean.repository;
 
 import bg.uni.sofia.fmi.spring.hirebean.model.entity.User;
-import org.springframework.stereotype.Repository;
-
 import java.util.Optional;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserRepository extends SoftDeleteRepository<User, Long> {
 
-    Optional<User> findByEmailAndDeletedAtIsNull(String email);
+  Optional<User> findByEmailAndDeletedAtIsNull(String email);
 
-    Boolean existsByEmailAndDeletedAtIsNull(String email);
+  Boolean existsByEmailAndDeletedAtIsNull(String email);
 }

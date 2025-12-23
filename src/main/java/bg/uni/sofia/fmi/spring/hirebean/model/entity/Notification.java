@@ -11,15 +11,15 @@ import jakarta.persistence.Table;
 @Table(name = "notifications")
 public class Notification extends BaseEntity {
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User recipient;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id", nullable = false)
+  private User recipient;
 
-    @Column(nullable = false)
-    private String message;
+  @Column(nullable = false)
+  private String message;
 
-    @Column(nullable = false)
-    private boolean isRead = false;
+  @Column(nullable = false)
+  private boolean isRead = false;
 
-    private String type;
+  private String type;
 }

@@ -9,14 +9,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "logs")
@@ -26,28 +25,28 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class Log {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Column(nullable = false)
-    private String action;
+  @Column(nullable = false)
+  private String action;
 
-    @Column(nullable = false)
-    private String entity;
+  @Column(nullable = false)
+  private String entity;
 
-    private Long entityId;
+  private Long entityId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User actor;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id")
+  private User actor;
 
-    private String details;
+  private String details;
 
-    @Column(nullable = false)
-    private String severity;
+  @Column(nullable = false)
+  private String severity;
 
-    @CreationTimestamp
-    @Column(updatable = false)
-    private LocalDateTime timestamp;
+  @CreationTimestamp
+  @Column(updatable = false)
+  private LocalDateTime timestamp;
 }

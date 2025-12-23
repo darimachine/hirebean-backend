@@ -21,11 +21,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Role {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 20, unique = true)
-    private RoleType name;
+  @Enumerated(EnumType.STRING)
+  @Column(length = 20, unique = true)
+  private RoleType name;
 }
