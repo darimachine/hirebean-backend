@@ -40,7 +40,6 @@ public class Company extends BaseEntity {
   @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
   private List<JobOffer> jobOffers;
 
-  // Recruiters
   @OneToMany(mappedBy = "company")
   private List<User> employees;
 }
