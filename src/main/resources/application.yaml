@@ -11,6 +11,6 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5433/hirebean_db
+    url: ${SPRING_DATASOURCE_URL}
     username: ${HIREBEAN_DB_USERNAME}
     password: ${HIREBEAN_DB_PASS}
