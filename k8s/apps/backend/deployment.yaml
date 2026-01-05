@@ -27,21 +27,8 @@ spec:
                   key: HIREBEAN_DB_USERNAME
             - name: HIREBEAN_DB_PASS
               valueFrom:
-                  secretKeyRef:
-                    name: hirebean-db-secret
-                    key: HIREBEAN_DB_PASS
+                secretKeyRef:
+                  name: hirebean-db-secret
+                  key: HIREBEAN_DB_PASS
           ports:
             - containerPort: 8080
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: hirebean-backend-service
-spec:
-  selector:
-    app: hirebean-backend
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 8080
-  type: ClusterIP
