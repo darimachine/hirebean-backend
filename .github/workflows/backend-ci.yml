@@ -83,15 +83,51 @@ jobs:
 
       - name: Verify Deployment
         run: |
-          echo "Pods in hirebean namespace:"
+          echo "Waiting for Postgres to be ready..."
+          kubectl wait --namespace hirebean \
+            --for=condition=ready pod \
+            --selector=app=postgres \
+            --timeout=120s
+          
+          echo "Waiting for Backend to be ready..."
+          kubectl wait --namespace hirebean \
+            --for=condition=ready pod \
+            --selector=app=hirebean-backend \
+            --timeout=120s
+          
+          # Spring Boot needs time to initialize after the pod is ready
+          echo "Sleeping for 30 seconds to allow Spring Boot initialization..."
+          sleep 30
+          
+          echo "=== PODS STATUS ==="
           kubectl get pods -n hirebean
-          echo "Services in hirebean namespace:"
+          
+          echo "=== SERVICE STATUS ==="
           kubectl get svc -n hirebean
-          echo "=== POD LOGS (if failed) ==="
+          
+          echo "=== APPLICATION LOGS ==="
+          # Check logs of the backend application
           kubectl logs -l app=hirebean-backend -n hirebean --tail=100
-          echo " --------- INTERNAL CONNECTION TEST ==="
-          kubectl run curl-test --image=curlimages/curl -n hirebean --restart=Never -- curl -v --fail http://hirebean-backend-service:80/api/companies || true
-         
-          sleep 10
-          #Check if the backend is responding
+          
+          echo "=== INTERNAL CONNECTION TEST (With Retry) ==="
+          # ВАЖНО: Добавено е --command, за да презапише entrypoint-а на image-а
+          kubectl run curl-test --image=curlimages/curl -n hirebean --restart=Never --command -- /bin/sh -c '
+            for i in $(seq 1 10); do 
+              echo "Attempt $i: Connecting to http://hirebean-backend-service:80/api/companies..."
+              if curl -v --fail http://hirebean-backend-service:80/api/companies; then 
+                echo "Success! Connected."
+                exit 0
+              fi
+              echo "Failed, retrying in 5s..."
+              sleep 5
+            done
+            echo "Failed after 10 attempts"
+            exit 1
+          '
+          
+          kubectl wait --for=condition=ready pod/curl-test -n hirebean --timeout=60s || true
+          
+          sleep 5
+          
+          echo "=== TEST LOGS ==="
           kubectl logs curl-test -n hirebean
