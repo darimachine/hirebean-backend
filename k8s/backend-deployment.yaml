@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hirebean-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hirebean-backend
+  template:
+    metadata:
+      labels:
+        app: hirebean-backend
+    spec:
+      containers:
+        - name: hirebean-backend
+          image: uchihadari/hirebean-backend:latest
+          imagePullPolicy: Always
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://postgres:5432/hirebean_db
+            - name: HIREBEAN_DB_USERNAME
+              value: myuser
+            - name: HIREBEAN_DB_PASS
+              value: mypassword
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hirebean-backend-service
+spec:
+  selector:
+    app: hirebean-backend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer
