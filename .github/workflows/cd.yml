@@ -1,0 +1,51 @@
+name: CD - Deploy to Kind
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      # 1. Docker build & Push to docker hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/hirebean-backend:latest
+
+        # 2. Setup kubernetes kind cluster
+      - name: Create Kind Cluster
+        uses: helm/kind-action@v1.8.0
+        with:
+          cluster_name: kind
+
+      # 3. Deploy
+      - name: Deploy to Kind
+        run: |
+          # Create namespace
+          kubectl create namespace hirebean || echo "Namespace 'hirebean' already exists"
+          
+          # Create Secret for Postgres
+          kubectl create secret generic hirebean-db-secret -n hirebean\
+              --from-literal=HIREBEAN_DB_USERNAME=${{ secrets.HIREBEAN_DB_USERNAME }} \
+              --from-literal=HIREBEAN_DB_PASS=${{ secrets.HIREBEAN_DB_PASS }} 
+          
+          # Apply from folders
+          kubectl apply -f k8s/apps/database/ -n hirebean
+          kubectl apply -f k8s/apps/backend/ -n hirebean
+
+      # 4. Verify Deployment
+      - name: Verify Deployment
+        run: |
+          chmod +x k8s/scripts/health-check.sh
+          ./k8s/scripts/health-check.sh
