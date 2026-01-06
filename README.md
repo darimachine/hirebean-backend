@@ -1,6 +1,6 @@
 # HireBean-Backend, Spring Backend & React & Typescript app + Devops
 
-## Форматиране 
+## Форматиране
 | Цел           | Команда                   |
 | ------------- | ------------------------- |
 | Форматиране   | `./gradlew spotlessApply` |
